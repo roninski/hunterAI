@@ -21,6 +21,9 @@ void decideMove(HunterView gameState) {
     int adjLocsSize;
     LocationID *adjLocations;
 
+	int trailLocationAge;
+	LocationID trailLocation = draculaLocation(gameState, &trailLocationAge);
+	
     if (currRound == 0) { // pick starting locations
         if (currPlayer == 0) {
             registerBestPlay(locToStr(KLAUSENBURG), "Start at KLAUSENBURG");
@@ -59,20 +62,22 @@ LocationID draculaLocation(HunterView hv, int *turnsAgo) {
 
 	int i;
 	for (i = 0; i < TRAIL_SIZE; i++) {
-		if (trail[i] < NUM_MAP_LOCATIONS) {
+		if (trail[i] >= 0 && trail[i] < NUM_MAP_LOCATIONS) {
 			*turnsAgo = i;
 			return trail[i];
 		} else if (trail[i] >= DOUBLE_BACK_1 && trail[i] <= DOUBLE_BACK_5) {
 			// If he's doubled back to a position still in the trail
 			// That position is his most recent known location
 			int dbTrailPosition = i + (trail[i] - (DOUBLE_BACK_1 - 1)); // i + doubleBackSteps
-			if (dbTrailPosition < TRAIL_SIZE && trail[dbTrailPosition] < NUM_MAP_LOCATIONS) {
+			if (dbTrailPosition < TRAIL_SIZE
+					&& trail[dbTrailPosition] >= 0 && trail[dbTrailPosition] < NUM_MAP_LOCATIONS) {
 				*turnsAgo = i;
 				return trail[dbTrailPosition];
 			}
 		}
 	}
 
+	*turnsAgo = -1;
 	return UNKNOWN_LOCATION;
 }
 
