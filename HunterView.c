@@ -983,7 +983,7 @@ LocationID * connectedLocations(HunterView currentView, int * numLocations, Loca
         }
     }
     
-    // adds from here to avoid being overwritten by above code
+    // adds "from" here to avoid being overwritten by above code
     // doing this saves putting extra checks in above code
     if (!isConnected[from]) {
         isConnected[from] = TRUE;
@@ -1014,7 +1014,7 @@ LocationID * connectedLocations(HunterView currentView, int * numLocations, Loca
         }
         dropQueue(q);
         for (i = 0; i < NUM_MAP_LOCATIONS; i++) {
-            if (distance[i] <= railTravelLength && !isConnected[i]) {
+            if (distance[i] >= 0 && distance[i] <= railTravelLength && !isConnected[i]) {
                 isConnected[i] = TRUE;
                 numIsConnected++;
             }
