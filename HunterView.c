@@ -64,11 +64,11 @@ void initialiseHunterView(HunterView HV) {
     }
 
     // initialise dracula
-    HV->players[NUM_PLAYERS-1].health = GAME_START_BLOOD_POINTS;
-    HV->players[NUM_PLAYERS-1].ID = NUM_PLAYERS-1;
-    HV->players[NUM_PLAYERS-1].curLocation = UNKNOWN_LOCATION;
+    HV->players[PLAYER_DRACULA].health = GAME_START_BLOOD_POINTS;
+    HV->players[PLAYER_DRACULA].ID = PLAYER_DRACULA;
+    HV->players[PLAYER_DRACULA].curLocation = UNKNOWN_LOCATION;
     for (j = 0; j < TRAIL_SIZE; j++) {
-        HV->players[NUM_PLAYERS-1].trail[j] = UNKNOWN_LOCATION;
+        HV->players[PLAYER_DRACULA].trail[j] = UNKNOWN_LOCATION;
     }
 
     // initialise map
@@ -833,7 +833,7 @@ HunterView newHunterView(char *pastPlays, playerMessage messages[]) {
         // all you have to do is handle what happens to the players during the move
         // (editing the data in their struct to simulate their turn)
 
-        if (curPlayerID != NUM_PLAYERS-1) {
+        if (curPlayerID != PLAYER_DRACULA) {
             // Hunter Move
             teleportedThisTurn = FALSE;
             for (i = stringIndex+3; i < stringIndex+7; i++) {
@@ -843,7 +843,7 @@ HunterView newHunterView(char *pastPlays, playerMessage messages[]) {
                     vampireOnMap = FALSE;*/ // redundant
                 } else if (pastPlays[i] == 'D') { // dracula confronted
                     HV->players[curPlayerID].health -= LIFE_LOSS_DRACULA_ENCOUNTER;
-                    HV->players[NUM_PLAYERS-1].health -= LIFE_LOSS_HUNTER_ENCOUNTER;
+                    HV->players[PLAYER_DRACULA].health -= LIFE_LOSS_HUNTER_ENCOUNTER;
                 }
                 
                 if (HV->players[curPlayerID].health <= 0) {
@@ -896,14 +896,14 @@ HunterView newHunterView(char *pastPlays, playerMessage messages[]) {
 
 // returns TRUE/FALSE
 int draculaAtSea(HunterView currentView) {
-    if (isSeaLocation(currentView->players[NUM_PLAYERS-1].curLocation)) {
+    if (isSeaLocation(currentView->players[PLAYER_DRACULA].curLocation)) {
         return TRUE;
     }
     
-    if (currentView->players[NUM_PLAYERS-1].curLocation >= DOUBLE_BACK_1
-            && currentView->players[NUM_PLAYERS-1].curLocation <= DOUBLE_BACK_5) {
-        int doubleBackSteps = currentView->players[NUM_PLAYERS-1].curLocation - (DOUBLE_BACK_1 - 1);
-        if (isSeaLocation(currentView->players[NUM_PLAYERS-1].trail[doubleBackSteps])) {
+    if (currentView->players[PLAYER_DRACULA].curLocation >= DOUBLE_BACK_1
+            && currentView->players[PLAYER_DRACULA].curLocation <= DOUBLE_BACK_5) {
+        int doubleBackSteps = currentView->players[PLAYER_DRACULA].curLocation - (DOUBLE_BACK_1 - 1);
+        if (isSeaLocation(currentView->players[PLAYER_DRACULA].trail[doubleBackSteps])) {
             return TRUE;
         }
     }
@@ -972,7 +972,7 @@ LocationID * connectedLocations(HunterView currentView, int * numLocations, Loca
         // or want rail, and allowed to use rail, and connected by rail,
         // or want sea, and connected by sea.
         if ((road && (currentView->map[from][i] == ROAD || currentView->map[from][i] == BOTH))
-                || (rail && player != NUM_PLAYERS-1 && railTravelLength > 0 &&
+                || (rail && player != PLAYER_DRACULA && railTravelLength > 0 &&
                      (currentView->map[from][i] == RAIL || currentView->map[from][i] == BOTH))
                 || (sea && currentView->map[from][i] == SEA)) {
             isConnected[i] = TRUE;
@@ -991,7 +991,7 @@ LocationID * connectedLocations(HunterView currentView, int * numLocations, Loca
     
     // BFS for finding rail travel connections
     // if railTravelLength is 1, already checked above to avoid unnecessary BFS
-    if (rail && player != NUM_PLAYERS-1 && railTravelLength > 1) {
+    if (rail && player != PLAYER_DRACULA && railTravelLength > 1) {
         Queue q = newQueue();
         int distance[NUM_MAP_LOCATIONS];
         for (i = 0; i < NUM_MAP_LOCATIONS; i++) {
