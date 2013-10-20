@@ -7,7 +7,7 @@
 #include "hunter.h"
 #include "cities.h"
 
-void headTowards(HunterView gameState, LocationID to, LocationID from, PlayerID player, int round, playerMessage message);
+void headTowards(HunterView hv, LocationID to, LocationID from, PlayerID player, int round, playerMessage message);
 
 void decideMove(HunterView gameState) {
     srand(time(NULL));
@@ -48,7 +48,7 @@ void decideMove(HunterView gameState) {
 }
 
 // Does a BFS, finds shortest path to location, and registers move
-void headTowards(HunterView gameState, LocationID to, LocationID from, PlayerID player, int round, playerMessage message) {
+void headTowards(HunterView hv, LocationID to, LocationID from, PlayerID player, int round, playerMessage message) {
     int i;
     int done = FALSE;
     Queue q = newQueue();
@@ -66,9 +66,9 @@ void headTowards(HunterView gameState, LocationID to, LocationID from, PlayerID 
     QueueJoin(q, from);
     while (!QueueIsEmpty(q)) {
         LocationID l = QueueLeave(q);
-        adjLocations = connectedLocations(gameState, &adjLocsSize, l, player, round + distance[l], 1, 1, 1);
+        adjLocations = connectedLocations(hv, &adjLocsSize, l, player, round + distance[l], 1, 1, 1);
         for (i = 0; i < adjLocsSize; i++) {
-            if (adjLocations[i] == to) { 
+            if (adjLocations[i] == to) { // we're done now
                 st[adjLocations[i]] = l;
                 done = TRUE;
                 break;
@@ -93,8 +93,4 @@ void headTowards(HunterView gameState, LocationID to, LocationID from, PlayerID 
         registerBestPlay(cities[prev], message);
     }
 }
-
-
-
-
 
