@@ -959,6 +959,7 @@ void getHistory(HunterView currentView, PlayerID player, LocationID trail[TRAIL_
 // road rail and sea are flags, TRUE or FALSE (const)
 LocationID * connectedLocations(HunterView currentView, int * numLocations, LocationID from, 
                               PlayerID player, Round round, int road, int rail, int sea) {
+	assert(from >= 0);
     int i, j;
     int isConnected[NUM_MAP_LOCATIONS];
     int numIsConnected = 0;
