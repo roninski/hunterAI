@@ -1,4 +1,5 @@
-all: HunterView.h hunter.h
-	gcc -g -o testHunter HunterView.c Queue.c cities.c testHunter.c hunter.c
+all:
+	gcc -Wall -Werror -O -c hunter.c HunterView.c Queue.c cities.c -ljansson
+
 clean:
-	rm -rf testHunter
+	rm -rf myPlayer
