@@ -816,10 +816,8 @@ HunterView newHunterView(char *pastPlays, playerMessage messages[]) {
         moveLocation[0] = pastPlays[stringIndex+1];
         moveLocation[1] = pastPlays[stringIndex+2];
         moveLocationID = 0;
-        while (strcmp(cities[moveLocationID], moveLocation)) {
+        while (strcmp(locToStr(moveLocationID), moveLocation)) {
             moveLocationID++;
-            assert(moveLocationID < NUM_LOCATIONS);
-            // this assert shouldn't ever fail provided that cities is complete
         }
         
         for (i = TRAIL_SIZE-2; i >= 0; i--) {

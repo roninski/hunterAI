@@ -23,28 +23,28 @@ void decideMove(HunterView gameState) {
 
     if (currRound == 0) { // pick starting locations
         if (currPlayer == 0) {
-            registerBestPlay(cities[KLAUSENBURG], "Start at KLAUSENBURG");
+            registerBestPlay(locToStr(KLAUSENBURG), "Start at KLAUSENBURG");
         } else if (currPlayer == 1) {
-            registerBestPlay(cities[LONDON], "Start at LONDON");
+            registerBestPlay(locToStr(LONDON), "Start at LONDON");
         } else if (currPlayer == 2) {
-            registerBestPlay(cities[MADRID], "Start at MADRID");
+            registerBestPlay(locToStr(MADRID), "Start at MADRID");
         } else {
-            registerBestPlay(cities[MILAN], "Start at MILAN");
+            registerBestPlay(locToStr(MILAN), "Start at MILAN");
         }
     } else {
         if (currPlayer == 0) { // hunter 0 camps outside castle dracula
             if (currLoc == GALATZ) {
-                registerBestPlay(cities[KLAUSENBURG], "Move to KLAUSENBURG");
+                registerBestPlay(locToStr(KLAUSENBURG), "Move to KLAUSENBURG");
             } else if (currLoc == KLAUSENBURG) {
-                registerBestPlay(cities[GALATZ], "Move to GALATZ");
+                registerBestPlay(locToStr(GALATZ), "Move to GALATZ");
             } else {
-                registerBestPlay(cities[currLoc], "Rest");
+                registerBestPlay(locToStr(currLoc), "Rest");
                 headTowards(gameState, KLAUSENBURG, currLoc, currPlayer, currRound, "Head towards KLAUSENBURG");
             }
 			// TODO if we're IN or VERY CLOSE TO draculas trail then follow him
         } else { // hunters 1, 2, 3 move randomly until draculas trail is found
             adjLocations = connectedLocations(gameState, &adjLocsSize, currLoc, currPlayer, currRound, 1, 1, 1);
-            registerBestPlay(cities[adjLocations[rand() % adjLocsSize]], "Move randomly via road, rail, or sea.");
+            registerBestPlay(locToStr(adjLocations[rand() % adjLocsSize]), "Move randomly via road, rail, or sea.");
 			// TODO if we KNOW draculas trail then follow him
         }
     }
@@ -119,7 +119,7 @@ void headTowards(HunterView hv, LocationID to, LocationID from, PlayerID player,
         }
         // so now st[prev] == from
         // so our next move is prev
-        registerBestPlay(cities[prev], message);
+        registerBestPlay(locToStr(prev), message);
     }
 }
 
