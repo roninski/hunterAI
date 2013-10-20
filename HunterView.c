@@ -951,9 +951,9 @@ LocationID getLocation(HunterView currentView, PlayerID player) {
 }
 
 
-void getHistory (HunterView currentView, PlayerID player,LocationID trail[TRAIL_SIZE]) {
+void getHistory(HunterView currentView, PlayerID player, LocationID trail[TRAIL_SIZE]) {
     int i;
-    for (i=0; i < TRAIL_SIZE; i++){
+    for (i = 0; i < TRAIL_SIZE; i++) {
         trail[i] = currentView->players[player].trail[i];
     }
 }

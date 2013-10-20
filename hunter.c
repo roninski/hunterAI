@@ -6,7 +6,9 @@
 #include "HunterView.h"
 #include "hunter.h"
 #include "cities.h"
+#include "Queue.h"
 
+LocationID draculaLocation(HunterView hv, int *turnsAgo);
 void headTowards(HunterView hv, LocationID to, LocationID from, PlayerID player, int round, playerMessage message);
 
 void decideMove(HunterView gameState) {
@@ -39,12 +41,39 @@ void decideMove(HunterView gameState) {
                 registerBestPlay(cities[currLoc], "Rest");
                 headTowards(gameState, KLAUSENBURG, currLoc, currPlayer, currRound, "Head towards KLAUSENBURG");
             }
+			// TODO if we're IN or VERY CLOSE TO draculas trail then follow him
         } else { // hunters 1, 2, 3 move randomly until draculas trail is found
             adjLocations = connectedLocations(gameState, &adjLocsSize, currLoc, currPlayer, currRound, 1, 1, 1);
             registerBestPlay(cities[adjLocations[rand() % adjLocsSize]], "Move randomly via road, rail, or sea.");
+			// TODO if we KNOW draculas trail then follow him
         }
-        // TODO if we're in draculas trail keep following him
     }
+}
+
+// Returns the most recent location in dracula's trail
+// Stores the number of turns since he was there in turnsAgo
+// turnsAgo would be 0 if he is still there
+LocationID draculaLocation(HunterView hv, int *turnsAgo) {
+	LocationID trail[TRAIL_SIZE];
+	getHistory(hv, PLAYER_DRACULA, trail);
+
+	int i;
+	for (i = 0; i < TRAIL_SIZE; i++) {
+		if (trail[i] < NUM_MAP_LOCATIONS) {
+			*turnsAgo = i;
+			return trail[i];
+		} else if (trail[i] >= DOUBLE_BACK_1 && trail[i] <= DOUBLE_BACK_5) {
+			// If he's doubled back to a position still in the trail
+			// That position is his most recent known location
+			int dbTrailPosition = i + (trail[i] - (DOUBLE_BACK_1 - 1)); // i + doubleBackSteps
+			if (dbTrailPosition < TRAIL_SIZE && trail[dbTrailPosition] < NUM_MAP_LOCATIONS) {
+				*turnsAgo = i;
+				return trail[dbTrailPosition];
+			}
+		}
+	}
+
+	return UNKNOWN_LOCATION;
 }
 
 // Does a BFS, finds shortest path to location, and registers move
