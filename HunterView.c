@@ -8,6 +8,7 @@ Luke Alderman, Charbel Antouny, Nathan Williams
 #include <assert.h>
 #include <string.h>
 #include "game.h"
+#include "cities.h"
 #include "HunterView.h"
 #include "Queue.h"
 
@@ -785,16 +786,6 @@ HunterView newHunterView(char *pastPlays, playerMessage messages[]) {
     HV->pastPlays = pastPlays;
 
     char players[] = {'G', 'S', 'H', 'M', 'D'};
-    char * cities[] = { "AL", "AM", "AT", "BA", "BI", "BE", "BR", "BO", "BU", "BC", 
-                        "BD", "CA", "CG", "CD", "CF", "CO", "CN", "DU", "ED", "FL", 
-                        "FR", "GA", "GW", "GE", "GO", "GR", "HA", "JM", "KL", "LE", 
-                        "LI", "LS", "LV", "LO", "MA", "MN", "MR", "MI", "MU", "NA",
-                        "NP", "NU", "PA", "PL", "PR", "RO", "SA", "SN", "SR", "SJ",
-                        "SO", "ST", "SW", "SZ", "TO", "VA", "VR", "VE", "VI", "ZA",
-                        "ZU",
-                        "NS", "EC", "IS", "AO", "BB", "MS", "TS", "IO", "AS", "BS",
-                        "C?", "S?", "HI", "D1", "D2", "D3", "D4", "D5", "TP"};
-                        // this has NUM_LOCATIONS (80) elements in it
 
     int stringIndex = 0;
     PlayerID curPlayerID = -1;
