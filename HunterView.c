@@ -805,7 +805,6 @@ HunterView newHunterView(char *pastPlays, playerMessage messages[]) {
         if (pastPlays[stringIndex] == '\0' || (stringIndex > 0 && pastPlays[stringIndex - 1] == '\0')) {
             break;
         }
-        printf("in loop\n");
 
         // Find who's turn it is
         for (i = 0; i < NUM_PLAYERS; i++) {
