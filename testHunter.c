@@ -5,6 +5,10 @@
  * (And any additional files you wrote for HunterView implementation)
  */
 
+// No idea why this file was put here
+// Seems to be a test file for the lab that relies on specific moves being made
+// So it's pretty useless for us here
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
