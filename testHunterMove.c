@@ -1,5 +1,5 @@
-// Test file I'm using to investigate an issue where
-// our AI seems to get disqualified in the first test round
+// Test file I used to investigate an issue where
+// our AI got disqualified in the testing round
 
 // Feel free to modify the pastPlays string in the
 // newHunterView call to test whatever situation you want
