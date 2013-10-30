@@ -15,30 +15,30 @@ int dracTrailContains(HunterView hv, LocationID location);
 void headTowards(HunterView hv, LocationID to, LocationID from, PlayerID player, int round, playerMessage message);
 
 void decideMove(HunterView gameState) {
-	int i;
+    int i;
     srand(time(NULL));
     
     int currRound = getRound(gameState);
     PlayerID currPlayer = getCurrentPlayer(gameState);
     LocationID currLoc = getLocation(gameState, currPlayer);
-	LocationID ourTrail[TRAIL_SIZE];
-	getHistory(gameState, currPlayer, ourTrail);
+    LocationID ourTrail[TRAIL_SIZE];
+    getHistory(gameState, currPlayer, ourTrail);
     
     int adjLocsSize;
     LocationID *adjLocations;
 
-	int trailLocationAge;
-	LocationID trailLocation = draculaLocation(gameState, &trailLocationAge);
+    int trailLocationAge;
+    LocationID trailLocation = draculaLocation(gameState, &trailLocationAge);
 
-	// this gives the time since we were at trailLocation
-	int dracPosInHunterTrail = TRAIL_SIZE;
-	for (i = 0; i < TRAIL_SIZE; i++) {
-		if (ourTrail[i] == trailLocation) {
+    // this gives the time since we were at trailLocation
+    int dracPosInHunterTrail = TRAIL_SIZE;
+    for (i = 0; i < TRAIL_SIZE; i++) {
+        if (ourTrail[i] == trailLocation) {
             dracPosInHunterTrail = i;
             break;
-		}
-	}
-	
+        }
+    }
+    
     if (currRound == 0) { // pick starting locations
         if (currPlayer == 0) {
             registerBestPlay(locToStr(KLAUSENBURG), "Start at KLAUSENBURG");
@@ -50,16 +50,16 @@ void decideMove(HunterView gameState) {
             registerBestPlay(locToStr(MILAN), "Start at MILAN");
         }
     } else { // for subsequent rounds
-		adjLocations = connectedLocations(gameState, &adjLocsSize, currLoc, currPlayer, currRound, 1, 1, 1);
+        adjLocations = connectedLocations(gameState, &adjLocsSize, currLoc, currPlayer, currRound, 1, 1, 1);
         
         // some common sense moves that override anything fancy
-		if (trailLocationAge == 0 && adjArrayContains(trailLocation, adjLocations, adjLocsSize)) {
-			registerBestPlay(locToStr(trailLocation), "Go to draculas current location");
-			return;
-		} else if (trailLocation == UNKNOWN_LOCATION && getHealth(gameState, currPlayer) < GAME_START_HUNTER_LIFE_POINTS) {
-			registerBestPlay(locToStr(currLoc), "Rest to regain health");
-			return;
-		}
+        if (trailLocationAge == 0 && adjArrayContains(trailLocation, adjLocations, adjLocsSize)) {
+            registerBestPlay(locToStr(trailLocation), "Go to draculas current location");
+            return;
+        } else if (trailLocation == UNKNOWN_LOCATION && getHealth(gameState, currPlayer) < GAME_START_HUNTER_LIFE_POINTS) {
+            registerBestPlay(locToStr(currLoc), "Rest to regain health");
+            return;
+        }
         
         if (currPlayer == 0) { // hunter 0 camps outside castle dracula
             if (currLoc == GALATZ) {
@@ -71,7 +71,7 @@ void decideMove(HunterView gameState) {
                 headTowards(gameState, KLAUSENBURG, currLoc, currPlayer, currRound, "Head towards KLAUSENBURG");
             }
             
-			// if we're in or one step away from draculas trail then follow him
+            // if we're in or one step away from draculas trail then follow him
             if (dracTrailContains(gameState, currLoc) || adjArrayContains(trailLocation, adjLocations, adjLocsSize)) {
                 if (trailLocationAge < dracPosInHunterTrail) {
                     // if dracula has been there since we were last there, head there
@@ -85,12 +85,12 @@ void decideMove(HunterView gameState) {
         } else { // hunters 1, 2, 3 move randomly until draculas trail is found
             // register random move first
             randomMove(adjLocations, adjLocsSize, currLoc, ourTrail[1]);
-			// but then if we know draculas trail then follow him
-			if (trailLocation != UNKNOWN_LOCATION && trailLocationAge < dracPosInHunterTrail) {
-				// Note: if trailLocationAge >= dracPosInHunterTrail then he's not still here
-				headTowards(gameState, trailLocation, currLoc, currPlayer, currRound, "Following draculas trail");
-			}
-			// TODO maybe find a smarter way to follow his trail :/
+            // but then if we know draculas trail then follow him
+            if (trailLocation != UNKNOWN_LOCATION && trailLocationAge < dracPosInHunterTrail) {
+                // Note: if trailLocationAge >= dracPosInHunterTrail then he's not still here
+                headTowards(gameState, trailLocation, currLoc, currPlayer, currRound, "Following draculas trail");
+            }
+            // TODO maybe find a smarter way to follow his trail :/
         }
     }
 }
@@ -107,55 +107,55 @@ void randomMove(LocationID *adjLocations, int adjLocsSize, LocationID currLoc, L
 // returns TRUE or FALSE showing whether location is a valid move
 // this function is just here to make code neater
 int adjArrayContains(LocationID location, LocationID *adjLocations, int adjLocsSize) {
-	int i;
-	for (i = 0; i < adjLocsSize; i++) {
-		if (adjLocations[i] == location) {
-			return TRUE;
-		}
-	}
-	return FALSE;
+    int i;
+    for (i = 0; i < adjLocsSize; i++) {
+        if (adjLocations[i] == location) {
+            return TRUE;
+        }
+    }
+    return FALSE;
 }
 
 // Returns the most recent location in dracula's trail
 // Stores the number of turns since he was there in turnsAgo
 // turnsAgo would be 0 if he is still there
 LocationID draculaLocation(HunterView hv, int *turnsAgo) {
-	LocationID trail[TRAIL_SIZE];
-	getHistory(hv, PLAYER_DRACULA, trail);
+    LocationID trail[TRAIL_SIZE];
+    getHistory(hv, PLAYER_DRACULA, trail);
 
-	int i;
-	for (i = 0; i < TRAIL_SIZE; i++) {
-		if (trail[i] >= 0 && trail[i] < NUM_MAP_LOCATIONS) {
-			*turnsAgo = i;
-			return trail[i];
-		} else if (trail[i] >= DOUBLE_BACK_1 && trail[i] <= DOUBLE_BACK_5) {
-			// If he's doubled back to a position still in the trail
-			// That position is his most recent known location
-			int dbTrailPosition = i + (trail[i] - (DOUBLE_BACK_1 - 1)); // i + doubleBackSteps
-			if (dbTrailPosition < TRAIL_SIZE
-					&& trail[dbTrailPosition] >= 0 && trail[dbTrailPosition] < NUM_MAP_LOCATIONS) {
-				*turnsAgo = i;
-				return trail[dbTrailPosition];
-			}
-		}
-	}
+    int i;
+    for (i = 0; i < TRAIL_SIZE; i++) {
+        if (trail[i] >= 0 && trail[i] < NUM_MAP_LOCATIONS) {
+            *turnsAgo = i;
+            return trail[i];
+        } else if (trail[i] >= DOUBLE_BACK_1 && trail[i] <= DOUBLE_BACK_5) {
+            // If he's doubled back to a position still in the trail
+            // That position is his most recent known location
+            int dbTrailPosition = i + (trail[i] - (DOUBLE_BACK_1 - 1)); // i + doubleBackSteps
+            if (dbTrailPosition < TRAIL_SIZE
+                    && trail[dbTrailPosition] >= 0 && trail[dbTrailPosition] < NUM_MAP_LOCATIONS) {
+                *turnsAgo = i;
+                return trail[dbTrailPosition];
+            }
+        }
+    }
 
-	*turnsAgo = -1;
-	return UNKNOWN_LOCATION;
+    *turnsAgo = -1;
+    return UNKNOWN_LOCATION;
 }
 
 // returns TRUE or FALSE showing whether the given location is in dracula's trail
 // this function is also just here to make code neater
 int dracTrailContains(HunterView hv, LocationID location) {
     int i;
-	LocationID trail[TRAIL_SIZE];
-	getHistory(hv, PLAYER_DRACULA, trail);
-	for (i = 0; i < TRAIL_SIZE; i++) {
-		if (trail[i] == location) {
-			return TRUE;
-		}
-	}
-	return FALSE;
+    LocationID trail[TRAIL_SIZE];
+    getHistory(hv, PLAYER_DRACULA, trail);
+    for (i = 0; i < TRAIL_SIZE; i++) {
+        if (trail[i] == location) {
+            return TRUE;
+        }
+    }
+    return FALSE;
 }
 
 // Does a BFS, finds shortest path to location, and registers move
