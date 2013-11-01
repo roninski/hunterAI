@@ -11,7 +11,7 @@
 void randomMove(LocationID *adjLocations, int adjLocsSize, LocationID currLoc, LocationID lastMove);
 int adjArrayContains(LocationID location, LocationID *adjLocations, int adjLocsSize);
 LocationID draculaLocation(HunterView hv, int *turnsAgo);
-int dracTrailContains(HunterView hv, LocationID location);
+//int dracTrailContains(HunterView hv, LocationID location);
 void headTowards(HunterView hv, LocationID to, LocationID from, PlayerID player, int round, playerMessage message);
 
 void decideMove(HunterView gameState) {
@@ -72,7 +72,7 @@ void decideMove(HunterView gameState) {
             }
             
             // if we're in or one step away from draculas trail then follow him
-            if (dracTrailContains(gameState, currLoc) || adjArrayContains(trailLocation, adjLocations, adjLocsSize)) {
+            /*if (dracTrailContains(gameState, currLoc) || adjArrayContains(trailLocation, adjLocations, adjLocsSize)) {
                 if (trailLocationAge < dracPosInHunterTrail) {
                     // if dracula has been there since we were last there, head there
                     headTowards(gameState, trailLocation, currLoc, currPlayer, currRound, "Following draculas trail");
@@ -81,7 +81,7 @@ void decideMove(HunterView gameState) {
                     randomMove(adjLocations, adjLocsSize, currLoc, ourTrail[1]);
                 }
                 
-            }
+            }*/
         } else { // hunters 1, 2, 3 move randomly until draculas trail is found
             // register random move first
             randomMove(adjLocations, adjLocsSize, currLoc, ourTrail[1]);
@@ -146,7 +146,7 @@ LocationID draculaLocation(HunterView hv, int *turnsAgo) {
 
 // returns TRUE or FALSE showing whether the given location is in dracula's trail
 // this function is also just here to make code neater
-int dracTrailContains(HunterView hv, LocationID location) {
+/*int dracTrailContains(HunterView hv, LocationID location) {
     int i;
     LocationID trail[TRAIL_SIZE];
     getHistory(hv, PLAYER_DRACULA, trail);
@@ -156,7 +156,7 @@ int dracTrailContains(HunterView hv, LocationID location) {
         }
     }
     return FALSE;
-}
+}*/
 
 // Does a BFS, finds shortest path to location, and registers move
 void headTowards(HunterView hv, LocationID to, LocationID from, PlayerID player, int round, playerMessage message) {
